@@ -36,3 +36,38 @@ stages:
       hash: md5
       md5: 8e3b56fb8d60295e2b749c353333e9eb
       size: 96317
+  model_train:
+    cmd: python src/models/train_model.py --config=params.yaml
+    deps:
+    - path: data/processed/churn_test.csv
+      hash: md5
+      md5: 963d1e133580bf9a095fe956f2e9fb64
+      size: 24209
+    - path: data/processed/churn_train.csv
+      hash: md5
+      md5: 8e3b56fb8d60295e2b749c353333e9eb
+      size: 96317
+    - path: src/models/train_model.py
+      hash: md5
+      md5: 38d5ec7e5118b9e363529b7767938d83
+      size: 4431
+    params:
+      params.yaml:
+        random_forest.max_depth: 10
+        random_forest.n_estimators: 30
+  log_production_model:
+    cmd: python src/models/production_model_selection.py --config=params.yaml
+    deps:
+    - path: src/models/production_model_selection.py
+      hash: md5
+      md5: 03ad1b85d5cb5ea83cb0d5e3dba438c3
+      size: 1912
+    params:
+      params.yaml:
+        random_forest.max_depth: 10
+        random_forest.n_estimators: 30
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: df944c0103f94d90bfec96f5356fa599
+      size: 703970

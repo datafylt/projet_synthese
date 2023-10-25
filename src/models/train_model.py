@@ -72,8 +72,19 @@ def train_and_evaluate(config_path):
     max_depth = config["random_forest"]["max_depth"]
     n_estimators = config["random_forest"]["n_estimators"]
 
+    found_file = os.path.isfile(train_data_path)
+    if not found_file:
+        train_data_path = "../../" + train_data_path
+        print("params file was not found!!!! - path: " + train_data_path)
+
     train = pd.read_csv(train_data_path, sep=",")
+
+    found_file = os.path.isfile(test_data_path)
+    if not found_file:
+        test_data_path = "../../" + test_data_path
+        print("params file was not found!!!! - path: " + test_data_path)
     test = pd.read_csv(test_data_path, sep=",")
+
     train_x, train_y = get_feat_and_target(train, target)
     test_x, test_y = get_feat_and_target(test, target)
 
@@ -100,13 +111,14 @@ def train_and_evaluate(config_path):
 
         tracking_url_type_store = urlparse(mlflow.get_artifact_uri()).scheme
 
+
         if tracking_url_type_store != "file":
             mlflow.sklearn.log_model(
                 model,
                 "model",
                 registered_model_name=mlflow_config["registered_model_name"])
         else:
-            mlflow.sklearn.load_model(model, "model")
+            mlflow.sklearn.log_model(model, "model")
 
 
 if __name__ == "__main__":
