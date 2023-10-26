@@ -118,7 +118,12 @@ def train_and_evaluate(config_path):
                 "model",
                 registered_model_name=mlflow_config["registered_model_name"])
         else:
+            # Log the model to the local directory
             mlflow.sklearn.log_model(model, "model")
+            # Get the URI of the model artifact
+            model_uri = os.path.join(mlflow.get_artifact_uri(), "model")
+            # Load the model from the local directory
+            mlflow.sklearn.load_model(model_uri=model_uri)
 
 
 if __name__ == "__main__":
